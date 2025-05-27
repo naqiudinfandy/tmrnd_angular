@@ -56,7 +56,3 @@ Follow these steps to set up and run the project locally:
 5. Open your browser and go to:
    ```bash
    http://localhost:4200
-
-
-
-## 🔗 [Demo Demo](https://your-demo-url.com)
