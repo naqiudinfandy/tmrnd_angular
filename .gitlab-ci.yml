@@ -1,0 +1,17 @@
+# The Docker image that will be used to build your app
+image: node:lts
+create-pages:
+  pages:
+    # The folder that contains the files to be exposed at the Page URL
+    publish: public
+  rules:
+    # This ensures that only pushes to the default branch will trigger
+    # a pages deploy
+    - if: $CI_COMMIT_REF_NAME == $CI_DEFAULT_BRANCH
+  # Functions that should be executed before the build script is run
+  before_script:
+    - npm i -g @angular/cli@19.2.5
+    - npm i
+  script:
+    - ng build --output-path public --base-href /tmrnd-angular/
+    - mv public/browser/* public/
