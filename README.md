@@ -56,3 +56,5 @@ Follow these steps to set up and run the project locally:
 5. Open your browser and go to:
    ```bash
    http://localhost:4200
+
+## [URL LINK](https://naqiudinfandy.github.io/tmrnd_angular/)
