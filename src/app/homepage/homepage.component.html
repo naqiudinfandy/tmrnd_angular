@@ -1,0 +1,117 @@
+<app-navbar></app-navbar>
+
+<div class="homepage-container">
+  <div class="header-section">
+    <h2>Home</h2>
+    <button class="add-product-btn" (click)="addProduct()">Add Product</button>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading products...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+    <button (click)="loadProducts()" class="retry-btn">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error" class="table-wrapper">
+    <table class="products-table">
+      <thead>
+        <tr>
+          <th>Product</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+        <ng-container *ngFor="let product of tableData; let i = index">
+          <tr *ngIf="product">
+            <td class="product-cell">
+              <div class="product-content">
+                <a *ngIf="product.id" [routerLink]="['/detail', product.id]" class="product-link">
+                  {{ product.productName }}
+                </a>
+                <div *ngIf="product.address" class="product-address">
+                  <small>{{ product.address }}</small>
+                </div>
+              </div>
+            </td>
+            <td class="action-cell">
+              <button class="action-btn" (click)="editProduct(product)" title="Edit">✏️</button>
+            </td>
+          </tr>
+        </ng-container>
+      </tbody>
+    </table>
+
+    <div class="pagination" *ngIf="totalPages > 0">
+      <button class="page-btn" (click)="goToPage(1)" [disabled]="currentPage === 1">&lt;&lt;</button>
+      <button class="page-btn" (click)="previousPage()" [disabled]="currentPage === 1">&lt;</button>
+      <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+      <button class="page-btn" (click)="nextPage()" [disabled]="currentPage === totalPages">&gt;</button>
+      <button class="page-btn" (click)="goToPage(totalPages)" [disabled]="currentPage === totalPages">&gt;&gt;</button>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && products.length === 0" class="no-products">
+    No products found.
+  </div>
+</div>
+
+<div *ngIf="showModal" class="modal-overlay" (click)="onModalBackdropClick($event)">
+  <div class="modal-container">
+    <div class="modal-header">
+      <h3>{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h3>
+      <button class="close-btn" (click)="closeModal()" type="button">×</button>
+    </div>
+
+    <div class="modal-body">
+      <form (ngSubmit)="submitProduct()" #productForm="ngForm">
+        <div class="form-group">
+          <label for="productName">Product Name (Hyperlink Text) *</label>
+          <input
+            type="text"
+            id="productName"
+            name="productName"
+            [(ngModel)]="newProduct.productName"
+            #productName="ngModel"
+            class="form-control"
+            placeholder="Enter product name (text for the link)"
+            required>
+          <div *ngIf="productName.invalid && productName.touched" class="error-message">
+            Product name is required
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="productUrl">Product URL *</label>
+          <input
+            type="url"
+            id="productUrl"
+            name="productUrl"
+            [(ngModel)]="newProduct.url"
+            #productUrl="ngModel"
+            class="form-control"
+            placeholder="Enter product URL (e.g., https://example.com)"
+            required>
+          <div *ngIf="productUrl.invalid && productUrl.touched" class="error-message">
+            Product URL is required
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" (click)="closeModal()">Cancel</button>
+
+          <div *ngIf="!isEditMode">
+            <button type="submit" class="btn btn-primary" [disabled]="!isFormValid">Submit</button>
+          </div>
+
+          <div *ngIf="isEditMode" class="edit-buttons">
+            <button type="button" class="btn btn-danger" (click)="removeProduct()">Remove</button>
+            <button type="submit" class="btn btn-primary" [disabled]="!isFormValid">Update</button>
+          </div>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

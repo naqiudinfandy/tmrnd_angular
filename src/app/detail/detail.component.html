@@ -1,0 +1,81 @@
+<app-navbar></app-navbar>
+
+<div class="detail-container">
+  <div class="header-section">
+    <h2>Detail Page<br>Product ID: {{ productId }}</h2>
+    <button class="add-product-btn" (click)="goBack()">Back to<br>Home</button>
+  </div>
+
+  <div class="date-filter-section">
+    <div class="form-group">
+      <label for="startDate">Start Date:</label>
+      <input type="date" id="startDate" [(ngModel)]="startDate" (change)="onDateChange()" class="form-control">
+    </div>
+    <div class="form-group">
+      <label for="endDate">End Date:</label>
+      <input type="date" id="endDate" [(ngModel)]="endDate" (change)="onDateChange()" class="form-control">
+    </div>
+  </div>
+
+  <div *ngIf="loading" class="loading">
+    Loading alerts...
+  </div>
+
+  <div *ngIf="error" class="error">
+    {{ error }}
+    <button (click)="loadAlerts()" class="retry-btn">Retry</button>
+  </div>
+
+  <div *ngIf="!loading && !error && alerts.length > 0" class="table-wrapper">
+    <table class="alerts-table">
+      <thead>
+        <tr>
+          <th>Status</th>
+          <th>Datetime</th>
+          <th>Remark</th>
+          <th>Duration</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let alert of alerts">
+          <td>{{ alert.status }}</td>
+          <td>{{ alert.datetime }}</td>
+          <td>{{ alert.remark }}</td>
+          <td>{{ alert.duration }}</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="pagination" *ngIf="totalPages > 0">
+      <button class="page-btn"
+              (click)="goToPage(1)"
+              [disabled]="currentPage === 1">
+        &lt;&lt;
+      </button>
+
+      <button class="page-btn"
+              (click)="previousPage()"
+              [disabled]="currentPage === 1">
+        &lt;
+      </button>
+
+      <span class="page-info">{{ currentPage }} of {{ totalPages }}</span>
+
+      <button class="page-btn"
+              (click)="nextPage()"
+              [disabled]="currentPage === totalPages">
+        &gt;
+      </button>
+
+      <button class="page-btn"
+              (click)="goToPage(totalPages)"
+              [disabled]="currentPage === totalPages">
+        &gt;&gt;
+      </button>
+    </div>
+  </div>
+
+  <div *ngIf="!loading && !error && alerts.length === 0" class="no-alerts">
+    No alerts found for the selected date range or product ID.
+  </div>
+</div>
